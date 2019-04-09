@@ -2,54 +2,71 @@ package challenge;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/recipe")
 public class RecipeController {
 
 	@Autowired
 	private RecipeService service;
 
-	public Recipe save() {
-		return service.save(null);
+	@PostMapping
+	public Recipe save(@RequestBody Recipe recipe) {
+		return service.save(recipe);
 	}
 
-	public void update() {
-		service.update(null, null);
+	@PutMapping(value = "/{id}")
+	public void update(@PathVariable String id, @RequestBody Recipe recipe) {
+		service.update(id, recipe);
 	}
 
-	public void delete() {
-		service.delete(null);
+	@DeleteMapping(value = "/{id}")
+	public void delete(@PathVariable String id) {
+		service.delete(id);
 	}
 
-	public Recipe get() {
-		return service.get(null);
+	@GetMapping(value = "/{id}")
+	public Recipe get(@PathVariable String id) {
+		return service.get(id);
 	}
 
-	public List<Recipe> listByIngredient() {
-		return service.listByIngredient(null);
+	@GetMapping("/ingredient")
+	public List<Recipe> listByIngredient(@RequestParam String ingredient) {
+		return service.listByIngredient(ingredient);
 	}
 
-	public List<Recipe> search() {
-		return service.search(null);
+	@GetMapping("/search")
+	public List<Recipe> search(@RequestParam String search) {
+		return service.search(search);
 	}
 
-	public void like() {
-		service.like(null, null);
+	@PostMapping(value = "/{id}/like/{userId}")
+	public void like(@PathVariable String id, @PathVariable String userId) {
+		service.like(id, userId);
 	}
 
-	public void unlike() {
-		service.unlike(null, null);
+	@DeleteMapping(value = "/{id}/like/{userId}")
+	public void unlike(@PathVariable String id, @PathVariable String userId) {
+		service.unlike(id, userId);
 	}
 
-	public RecipeComment addComment() {
-		return service.addComment(null, null);
+	@RequestMapping("/{id}/comment")
+	@PostMapping
+	public RecipeComment addComment(@PathVariable String id, @RequestBody RecipeComment recipeComment) {
+		return service.addComment(id, recipeComment);
 	}
 
-	public void updateComment() {
-		service.updateComment(null, null, null);
-	}
-
-	public void deleteComment() {
-		service.deleteComment(null, null);
-	}
+//	@RequestMapping("/{id}/comment/{commentId}")
+//	@PutMapping
+//	public void updateComment(@PathVariable String id, @PathVariable String commentId, @RequestBody RecipeComment recipeComment) {
+//		service.updateComment(id, commentId, recipeComment);
+//	}
+//
+//	@RequestMapping("/{id}/comment/{commentId}")
+//	@DeleteMapping
+//	public void deleteComment(@PathVariable String id, @PathVariable String commentId) {
+//		service.deleteComment(id, commentId);
+//	}
 
 }
