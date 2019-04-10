@@ -1,11 +1,13 @@
 package challenge;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Classe para mapear o comentario da receita no MongoDB
  *
  */
+@Document
 public class RecipeComment {
 
     @Id
@@ -13,9 +15,17 @@ public class RecipeComment {
 
     private String comment;
 
+    RecipeComment(){
 
-    public RecipeComment(String comment) {
-        this.comment = comment;
+    }
+
+//    public RecipeComment(String comment) {
+//        this.comment = comment;
+//    }
+
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getId() {

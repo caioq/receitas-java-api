@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,9 +28,11 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	public void update(String id, Recipe recipe) {
-		//Optional<Recipe> oldRecipe = recipeRepository.findById(id);
-		//recipe.setId(id);
-		recipeRepository.save(recipe);
+		Recipe recipeUpdated = get(id);
+		recipeUpdated.setTitle(recipe.getTitle());
+		recipeUpdated.setDescription(recipe.getDescription());
+		recipeUpdated.setIngredients(recipe.getIngredients());
+		recipeRepository.save(recipeUpdated);
 	}
 
 	@Override
@@ -47,7 +51,7 @@ public class RecipeServiceImpl implements RecipeService {
 		List<Recipe> recipes = recipeRepository.findAll();
 		recipes = recipes.stream().filter(r -> {
 			//List<String> listIngredients = r.getIngredients();
-			System.out.println("Ingredientes: " + r.getIngredients().toString() + r.hasIngredientInRecipe(ingredient));
+			//System.out.println("Ingredientes: " + r.getIngredients().toString() + r.hasIngredientInRecipe(ingredient));
 			return r.hasIngredientInRecipe(ingredient);
 		}).sorted(Comparator.comparing(Recipe::getTitle)).collect(Collectors.toList());
 		if(!recipes.isEmpty()){
@@ -94,24 +98,45 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	public RecipeComment addComment(String id, RecipeComment comment) {
-		//RecipeComment recipeComment = new RecipeComment(comment.getComment());
-//		Recipe recipe = this.get(id);
-//		List<RecipeComment> comments = recipe.getComments();
-//		comments.add(comment);
-//		recipe.setComments(comments);
-//		this.save(recipe);
-//		return comment;
-		return null;
+		ObjectId idRecipeComment = new ObjectId();
+		comment.setId(idRecipeComment.toString());
+		Recipe recipe = this.get(id);
+		List<RecipeComment> comments = recipe.getComments();
+		comments.add(comment);
+		recipe.setComments(comments);
+		this.save(recipe);
+		return comment;
 	}
 
 	@Override
 	public void updateComment(String id, String commentId, RecipeComment comment) {
+		Recipe recipe = get(id);
+		List<RecipeComment> comments = recipe.getComments();
 
+		List<RecipeComment> commentsUpdated = comments.stream().map(com -> {
+			if(com.getId().equals(commentId)){
+				com.setComment(comment.getComment());
+			}
+			return com;
+			}).collect(Collectors.toList());
+
+		// atualiza comentarios na receita
+		recipe.setComments(commentsUpdated);
+		recipeRepository.save(recipe);
 	}
 
 	@Override
 	public void deleteComment(String id, String commentId) {
+		Recipe recipe = get(id);
+		List<RecipeComment> comments = recipe.getComments();
 
+		List<RecipeComment> commentsUpdated = comments.stream().
+				filter(com -> !com.getId().equals(commentId)).
+				collect(Collectors.toList());
+
+		// atualiza comentarios na receita
+		recipe.setComments(commentsUpdated);
+		recipeRepository.save(recipe);
 	}
 
 }

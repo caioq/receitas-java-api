@@ -64,16 +64,6 @@ public class Recipe {
         return comments;
     }
 
-    public Boolean hasWordInDescriptionOrTittle(String word) {
-        word = word.toLowerCase();
-        return title.toLowerCase().contains(word) || description.toLowerCase().contains(word);
-    }
-
-    public Boolean hasIngredientInRecipe(String ingredient) {
-        ingredient = ingredient.toLowerCase();
-        return ingredients.contains(ingredient);
-    }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -96,5 +86,15 @@ public class Recipe {
 
     public void setComments(List<RecipeComment> comments) {
         this.comments = comments;
+    }
+
+    public Boolean hasWordInDescriptionOrTittle(String word) {
+        word = word.toLowerCase();
+        return title.toLowerCase().contains(word) || description.toLowerCase().contains(word);
+    }
+
+    public Boolean hasIngredientInRecipe(String ingredient) {
+        ingredient = ingredient.toLowerCase();
+        return ingredients.contains(ingredient);
     }
 }

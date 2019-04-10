@@ -57,16 +57,14 @@ public class RecipeController {
 		return service.addComment(id, recipeComment);
 	}
 
-//	@RequestMapping("/{id}/comment/{commentId}")
-//	@PutMapping
-//	public void updateComment(@PathVariable String id, @PathVariable String commentId, @RequestBody RecipeComment recipeComment) {
-//		service.updateComment(id, commentId, recipeComment);
-//	}
-//
-//	@RequestMapping("/{id}/comment/{commentId}")
-//	@DeleteMapping
-//	public void deleteComment(@PathVariable String id, @PathVariable String commentId) {
-//		service.deleteComment(id, commentId);
-//	}
+	@PutMapping(value = "/{id}/comment/{commentId}")
+	public void updateComment(@PathVariable String id, @PathVariable String commentId, @RequestBody RecipeComment recipeComment) {
+		service.updateComment(id, commentId, recipeComment);
+	}
+
+	@DeleteMapping(value = "/{id}/comment/{commentId}")
+	public void deleteComment(@PathVariable String id, @PathVariable String commentId) {
+		service.deleteComment(id, commentId);
+	}
 
 }
