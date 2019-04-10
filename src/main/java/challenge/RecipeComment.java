@@ -19,11 +19,6 @@ public class RecipeComment {
 
     }
 
-//    public RecipeComment(String comment) {
-//        this.comment = comment;
-//    }
-
-
     public void setId(String id) {
         this.id = id;
     }

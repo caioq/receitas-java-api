@@ -31,13 +31,13 @@ public class RecipeController {
 		return service.get(id);
 	}
 
-	@GetMapping("/ingredient")
-	public List<Recipe> listByIngredient(@RequestParam String ingredient) {
+	@GetMapping(value = "/ingredient", params = "ingredient")
+	public List<Recipe> listByIngredient(@RequestParam("ingredient") String ingredient) {
 		return service.listByIngredient(ingredient);
 	}
 
-	@GetMapping("/search")
-	public List<Recipe> search(@RequestParam String search) {
+	@GetMapping(value = "/search", params = "search")
+	public List<Recipe> search(@RequestParam("search") String search) {
 		return service.search(search);
 	}
 

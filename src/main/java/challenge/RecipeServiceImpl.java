@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.stereotype.Service;
@@ -48,29 +49,28 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	public List<Recipe> listByIngredient(String ingredient) {
-		List<Recipe> recipes = recipeRepository.findAll();
-		recipes = recipes.stream().filter(r -> {
-			//List<String> listIngredients = r.getIngredients();
-			//System.out.println("Ingredientes: " + r.getIngredients().toString() + r.hasIngredientInRecipe(ingredient));
-			return r.hasIngredientInRecipe(ingredient);
-		}).sorted(Comparator.comparing(Recipe::getTitle)).collect(Collectors.toList());
-		if(!recipes.isEmpty()){
-			return recipes;
-		}
-		return null;
+		List<Recipe> recipes = recipeRepository.findRecipesByIngredientsOrderByTitleAsc(ingredient);
+		return (recipes.size() > 0 ? recipes : null);
 	}
 
 	@Override
 	public List<Recipe> search(String search) {
+
 		List<Recipe> recipes = recipeRepository.findAll();
-		recipes = recipes.stream().filter(r -> {
-			//System.out.println(listIngredients);
-			return r.hasWordInDescriptionOrTittle(search);
-		}).sorted(Comparator.comparing(Recipe::getTitle)).collect(Collectors.toList());
-		if(!recipes.isEmpty()){
-			return recipes;
+		List<Recipe> recipesFiltered = recipes.stream().
+				map(r -> {
+					r.setTitle(r.getTitle().toLowerCase());
+					r.setDescription(r.getDescription().toLowerCase());
+					return r;
+				}).
+				filter(r -> r.getTitle().contains(search.toLowerCase()) || r.getTitle().contains(search.toLowerCase())).
+				sorted(Comparator.comparing(Recipe::getTitle)).collect(Collectors.toList());
+		if(recipesFiltered.size() > 0){
+			return recipesFiltered;
 		}
 		return null;
+//		search = search.toLowerCase();
+//		return recipeRepository.findRecipesByTitleContainingOrDescriptionContainingOrderByTitleAsc(search, search);
 	}
 
 	@Override
